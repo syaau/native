@@ -1,5 +1,6 @@
 {
   "name": "@bhoos/foundation-demo",
+  "private": true,
   "version": "0.0.1",
   "description": "A simple demo app for foundation",
   "main": "index.js",
