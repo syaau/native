@@ -1,0 +1,12 @@
+{
+  "name": "@bhoos/stage",
+  "version": "0.0.1",
+  "description": "An animation sequencing library",
+  "main": "__dist__/index.js",
+  "author": "Ranjan Shrestha",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^16.3.0",
+    "react-native": "^0.54.4"
+  }
+}
