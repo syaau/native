@@ -5,6 +5,9 @@
   "main": "__dist__/index.js",
   "author": "Ranjan Shrestha",
   "license": "MIT",
+  "files": [
+    "__dist__"
+  ],
   "scripts": {
     "clean": "../../node_modules/.bin/rimraf __dist__",
     "flow": "../../node_modules/.bin/flow-copy-source src __dist__",
