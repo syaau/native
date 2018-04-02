@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/stage",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An animation sequencing library",
   "main": "__dist__/index.js",
   "author": "Ranjan Shrestha",
