@@ -8,8 +8,11 @@ import anim from './_animationApi';
 
 // $FlowFixMe
 Stage.Animated = Animated;
+Stage.View = Stage.Animated;
+
 // $FlowFixMe
 Stage.Attached = Attached;
+Stage.AttachedView = Attached;
 
 export {
   anim,
