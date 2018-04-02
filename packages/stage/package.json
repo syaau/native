@@ -10,6 +10,7 @@
     "flow": "../../node_modules/.bin/flow-copy-source src __dist__",
     "build": "../../node_modules/.bin/babel src -d __dist__",
     "prepack": "npm run clean && npm run build && npm run flow",
+    "prepublishOnly": "npm run prepack",
     "watch": "../../node_modules/.bin/babel src -d __dist__ -w"
   },
   "peerDependencies": {
