@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/native",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React Native Library by Bhoos",
   "main": "index.js",
   "dependencies": {
