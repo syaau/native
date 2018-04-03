@@ -1,0 +1,11 @@
+{
+  "name": "@bhoos/native",
+  "version": "0.0.4",
+  "description": "React Native Library by Bhoos",
+  "main": "index.js",
+  "dependencies": {
+    "@bhoos/stage": "^0.0.4"
+  },
+  "author": "Ranjan Shrestha",
+  "license": "MIT"
+}
