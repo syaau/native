@@ -1,0 +1,29 @@
+{
+  "name": "@bhoos/rn-app",
+  "version": "0.0.6",
+  "description": "A react-native app launcher",
+  "main": "lib/App.js",
+  "files": [
+    "ios",
+    "android",
+    "lib",
+    "RNApp.podspec"
+  ],
+  "scripts": {
+    "lint": "../../node_modules/.bin/eslint src",
+    "clean": "../../node_modules/.bin/rimraf lib",
+    "flow": "../../node_modules/.bin/flow-copy-source src lib",
+    "build": "../../node_modules/.bin/babel src -d lib",
+    "prepublishOnly": "npm run lint && npm run clean && npm run build && npm run flow"
+  },
+  "peerDependencies": {
+    "react": ">=15",
+    "react-native": ">=0.40"
+  },
+  "devDependencies": {
+    "babel-preset-react-native": "4.0.0"
+  },
+  "homepage": "https://github.com/bhoos/native",
+  "author": "Ranjan Shrestha",
+  "license": "MIT"
+}
