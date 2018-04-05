@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/rn-app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A react-native app launcher",
   "main": "lib/App.js",
   "files": [
