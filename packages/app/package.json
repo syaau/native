@@ -1,5 +1,5 @@
 {
-  "name": "@bhoos/rn-app",
+  "name": "rn-app",
   "version": "0.0.10",
   "description": "A react-native app launcher",
   "main": "lib/App.js",
