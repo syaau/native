@@ -98,8 +98,20 @@ export default class InstanceStage<T:ActionProps> extends BasicStage<T> {
   }
 
   onComplete() {
+    this.isComplete = true;
+
     if (this.stage.onComplete && !this.instance.unmounted) {
       this.stage.onComplete(this.params);
+    }
+
+    // If there are any stage to apply to the instance do it now
+    if (this.instance.state.finalStage !== this) {
+      // eslint-disable-next-line no-unused-expressions
+      debug && debug(`ActionView::Updating Final Stage ${this.instance.state.finalStage.getName()} to update`);
+      this.instance.setState({
+        stage: this.instance.state.finalStage,
+      });
+      // this.instance.state.finalStage.queue();
     }
   }
 
@@ -168,7 +180,6 @@ export default class InstanceStage<T:ActionProps> extends BasicStage<T> {
   finish(finished: boolean, callback?: () => void) {
     // eslint-disable-next-line no-unused-expressions
     debug && debug(`ActionView::Finishing Stage ${this.getName()} - finished: ${finished ? 'COMPLETE' : 'INCOMPLETE'}`);
-    this.isComplete = true;
 
     if (this.stage.forward) {
       try {
@@ -181,16 +192,6 @@ export default class InstanceStage<T:ActionProps> extends BasicStage<T> {
     // Finally trigger the queue manager to run next stage on queue
     if (callback) {
       callback();
-    }
-
-    // If there are any stage to apply to the instance do it now
-    if (this.instance.state.finalStage !== this) {
-      // eslint-disable-next-line no-unused-expressions
-      debug && debug(`ActionView::Updating Final Stage ${this.instance.state.finalStage.getName()} to update`);
-      this.instance.setState({
-        stage: this.instance.state.finalStage,
-      });
-      // this.instance.state.finalStage.queue();
     }
   }
 
