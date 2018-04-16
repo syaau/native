@@ -1,0 +1,12 @@
+{
+  "name": "@bhoos/animation",
+  "version": "0.1.0",
+  "description": "React Native animation helper library with promises",
+  "main": "cjs/index.js",
+  "react-native": "src/index.js",
+  "peerDependencies": {
+    "react-native": "*"
+  },
+  "author": "Ranjan Shrestha",
+  "license": "MIT"
+}
