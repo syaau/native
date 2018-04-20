@@ -1,132 +1,130 @@
-/**
- * @flow
- */
+// @flow
+/* eslint-disable camelcase, no-underscore-dangle */
 import { Component } from 'react';
-import PropTypes from 'prop-types';
+import type { Node } from 'react';
+import Group from './Group';
+import shallowEqual from './shallowEqual';
 
-import { createStage } from './Instance';
-import type { BasicStage } from './Instance';
-import type { ActionProps, Context } from './types';
+const defaultGroup = new Group();
 
-import debug from './_debug';
+function stageOnUpdate(stage, { group, params }) {
+  return {
+    queue: (order, action, extraArgs) => group.queue(action, stage, params, extraArgs, order),
+    set: updater => new Promise(resolve => stage.updateState(updater, resolve)),
+  };
+}
 
-type State<Props: ActionProps> = {
-  stage: BasicStage<Props>,
-  finalStage: BasicStage<Props>,
+function stageOnCreate(stage, { group, params }) {
+  return {
+    queue: (order, action, extraArgs) => group.queue(action, stage, params, extraArgs, order),
+    set: updater => new Promise(resolve => stage.updateState(updater, resolve)),
+  };
+}
+
+type StageOperation = {
+  queue: (order: number, action: Object | (StageOperation) => void | Promise<void>, extraArgs: Object) => void,
+  set: (updater: Object) => Promise<void>,
 };
 
-class Stage<Props: ActionProps> extends Component<Props, State<Props>> {
-  /* eslint-disable react/sort-comp */
-  unmounted: boolean;
-  /* eslint-enable */
+type Props<T> = {
+  params: Object,
+  prepare: (StageOperation) => void,
+  onChange: (StageOperation) => void,
 
-  constructor(props: Props, context: Context) {
-    super(props, context);
+  // eslint-disable-next-line react/no-unused-prop-types, Used in helper method
+  group: Group,
+  children: (stage:T) => Node,
+};
 
-    const stage = createStage(this, props, context);
-    this.state = {
-      // Always update the stage via the queue, otherwise we will
-      // not be able to control the sequence
-      finalStage: stage,
-      stage,
-    };
-  }
+class Stage extends Component<Props, {}> {
+  static defaultProps = {
+    group: defaultGroup,
+  };
 
-  getChildContext() {
-    return {
-      actionDriver: this.state.stage && this.state.stage.driver,
-    };
-  }
+  constructor(props) {
+    super(props);
 
-  componentDidMount() {
-    // Queue the first stage
-    // eslint-disable-next-line no-unused-expressions
-    debug && debug(`ActionView::Queuing Stage ${this.state.stage.getName()} on mount`);
-    this.state.stage.queue();
-  }
+    this.updateResolvers = [];
 
-  componentWillReceiveProps(nextProps: Props, nextContext: Context) {
-    if (this.state.finalStage.stage !== nextProps.stage) {
-      const newStage = createStage(this, nextProps, nextContext);
-      const { stage, finalStage } = this.state;
-      if (stage === finalStage && stage.isComplete) {
-        if (!stage.hide) {
-          this.setState({
-            stage: newStage,
-            finalStage: newStage,
-          });
-        } else {
-          // Do not update the state right away, there might be a hide animation
-          // to show before updating
-          // eslint-disable-next-line no-unused-expressions
-          debug && debug(`ActionView::Queing defered Stage ${newStage.getName()} on update`);
-          newStage.queue();
-        }
-      } else {
-        this.setState({
-          finalStage: newStage,
-        });
-      }
+    // Start with an empty state
+    this.state = {};
+    this.unmounted = false;
+
+    // Update stages for the first time
+    if (props.prepare) {
+      const updateState = props.prepare(stageOnCreate(this, props), props.params);
+      this.state = {
+        ...props.params,
+        ...updateState,
+      };
     } else {
-      this.state.finalStage.update(nextProps, nextContext);
+      this.state = props.params;
     }
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State<Props>) {
-    // If we have just changed the state, or the stage was changed
-    // then we need to update
-    if (this.state.stage !== nextState.stage) {
-      return true;
+  shouldComponentUpdate(nextProps, nextState) {
+    // Update the stage when the params change
+    if (nextProps.params !== this.props.params) {
+      nextProps.onChange(
+        stageOnUpdate(this, nextProps),
+        nextProps.params,
+        this.props.params
+      );
     }
 
-    // If the updates are for future, then don't update
-    if (nextState.stage !== nextState.finalStage) {
-      return false;
+    // Only update if the state has changed
+    const update = !shallowEqual(nextState, this.state);
+    if (!update) {
+      console.log('Resolving without update', nextState, this.states);
+      this.resolveAll(true);
     }
-
-    // If on the same stage, let the stage decide
-    const updateAnim = nextState.stage.shouldUpdate();
-    if (updateAnim === true) {
-      return true;
-    } else if (updateAnim) {
-      updateAnim.start();
-    }
-
-    return false;
+    return update;
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State<Props>) {
-    if (this.state.stage !== prevState.stage) {
-      if (!prevState.stage.hide) {
-        // eslint-disable-next-line no-unused-expressions
-        debug && debug(`ActionView::Queuing stage to run ${this.state.stage.getName()} on Update`);
-        this.state.stage.queue();
-      }
-    }
+  componentDidUpdate() {
+    this.resolveAll(true);
   }
 
   componentWillUnmount() {
-    // eslint-disable-next-line no-unused-expressions
-    debug && debug(`ActionView::Unmounting component with ${this.state.stage.getName()}`);
     this.unmounted = true;
+    // Resolve all updates
+    this.resolveAll(false);
   }
 
-  render() {
-    const { stage } = this.state;
-    if (stage === null) {
+  updateState(updater, resolve) {
+    if (this.unmounted) {
+      resolve(false);
+      return;
+    }
+
+    console.log('Updating State to ', updater);
+    this.updateResolvers.push(resolve);
+    this.setState(updater);
+  }
+
+  resolveAll(result) {
+    const all = this.updateResolvers;
+    this.updateResolvers = [];
+    all.forEach(r => r(result));
+  }
+
+  execute(action, params, extraArgs) {
+    console.log('Executing action', action);
+    // Do not execute action on an already unmounted component
+    if (this.unmounted) {
       return null;
     }
 
-    return stage.other.children;
+    return action(stageOnUpdate(this, this.props), params, extraArgs);
+  }
+
+  unmounted = false;
+
+  render() {
+    console.log('Rendering Stage');
+    const { children } = this.props;
+    return children(this.state);
   }
 }
-
-Stage.childContextTypes = {
-  actionDriver: PropTypes.object,
-};
-
-Stage.contextTypes = {
-  actionDriver: PropTypes.object,
-};
 
 export default Stage;
