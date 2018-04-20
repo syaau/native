@@ -1,6 +1,6 @@
 {
   "name": "rn-app",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "description": "A react-native app launcher",
   "main": "lib/App.js",
   "react-native": "src/App.js",
