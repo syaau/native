@@ -14,16 +14,16 @@ export function spring(value, toValue, config) {
   });
 }
 
-export function timing(value, toValue, duration, config) {
+export function timing(value, toValue, duration = 300, config) {
   return Animated.timing(value, {
+    ...config,
     toValue,
     duration,
     useNativeDriver: true,
-    ...config,
   });
 }
 
-export function decay(value, velocity, deceleration, config) {
+export function decay(value, velocity, deceleration = 0.997, config) {
   return Animated.decay(value, {
     velocity,
     deceleration,
@@ -42,6 +42,10 @@ export function parallel(animations) {
 
 export function sequence(animations) {
   return Animated.sequence(animations);
+}
+
+export function stagger(duration, animations) {
+  return Animated.stagger(duration, animations);
 }
 
 export function interpolate(value, outputRange, inputRange, config) {
