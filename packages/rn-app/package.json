@@ -3,10 +3,12 @@
   "version": "0.0.10",
   "description": "A react-native app launcher",
   "main": "lib/App.js",
+  "react-native": "src/App.js",
   "files": [
     "ios",
     "android",
     "lib",
+    "src",
     "RNApp.podspec"
   ],
   "scripts": {
