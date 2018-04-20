@@ -58,15 +58,19 @@ class Group {
     }
 
     // Activate all the stages at once
-    Promise.all(actions.map(({ stage, action, params, extraArgs }) => (
-      stage.execute(action, params, extraArgs)
-    ))).then(() => {
+    Promise.all(actions.map(({ stage, action, extraArgs }) => {
+      if (stage.isUnmounted()) {
+        return null;
+      }
+
+      return action(stage, ...extraArgs);
+    })).then(() => {
       // Make an attempt to run again once all the actions are done
       this.run();
     });
   }
 
-  queue(action, stage, params, extraArgs, order) {
+  queue(action, stage, extraArgs, order) {
     // Search for the stage in queued instances and remove it
     // this.batches.forEach(batch => batch.remove(stage));
 
@@ -74,7 +78,7 @@ class Group {
     const batch = this.getBatch();
 
     // include it on the batch based on the order
-    batch.add({ action, stage, params, extraArgs }, order);
+    batch.add({ action, stage, extraArgs }, order);
   }
 }
 

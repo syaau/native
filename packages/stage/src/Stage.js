@@ -4,36 +4,31 @@ import { Component } from 'react';
 import type { Node } from 'react';
 import Group from './Group';
 import shallowEqual from './shallowEqual';
+import stateChanged from './stateChanged';
 
 const defaultGroup = new Group();
 
-function stageOnUpdate(stage, { group, params }) {
-  return {
-    queue: (order, action, extraArgs) => group.queue(action, stage, params, extraArgs, order),
-    set: updater => new Promise(resolve => stage.updateState(updater, resolve)),
-  };
-}
-
-function stageOnCreate(stage, { group, params }) {
-  return {
-    queue: (order, action, extraArgs) => group.queue(action, stage, params, extraArgs, order),
-    set: updater => new Promise(resolve => stage.updateState(updater, resolve)),
-  };
-}
-
 type StageOperation = {
-  queue: (order: number, action: Object | (StageOperation) => void | Promise<void>, extraArgs: Object) => void,
+  queue: (
+    order: number,
+    action: (StageOperation) => void | Promise<void>,
+    extraArgs: Object
+  ) => void,
   set: (updater: Object) => Promise<void>,
 };
 
-type Props<T> = {
+type Props = {
   params: Object,
+
   prepare: (StageOperation) => void,
+
+  // eslint-disable-next-line react/no-unused-prop-types, Used in getDerivedStateFromProps
   onChange: (StageOperation) => void,
 
   // eslint-disable-next-line react/no-unused-prop-types, Used in helper method
   group: Group,
-  children: (stage:T) => Node,
+
+  children: (stage: Object) => Node,
 };
 
 class Stage extends Component<Props, {}> {
@@ -41,44 +36,67 @@ class Stage extends Component<Props, {}> {
     group: defaultGroup,
   };
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { __proxy__ } = prevState;
+    const currentParams = __proxy__.getCurrentParams();
+
+    // Only if params have changed
+    if (!shallowEqual(nextProps.params, currentParams)) {
+      return nextProps.onChange(__proxy__, nextProps.params, currentParams);
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
 
+    // List of resolvers waiting for update
     this.updateResolvers = [];
-
-    // Start with an empty state
-    this.state = {};
     this.unmounted = false;
 
-    // Update stages for the first time
-    if (props.prepare) {
-      const updateState = props.prepare(stageOnCreate(this, props), props.params);
-      this.state = {
-        ...props.params,
-        ...updateState,
-      };
-    } else {
-      this.state = props.params;
-    }
+    const proxy = {
+      getCurrentParams: () => this.props.params,
+
+      isUnmounted: () => this.unmounted,
+
+      queue: (order, action, ...extraArgs) => {
+        this.props.group.queue(action, proxy, extraArgs, order);
+      },
+
+      set: stage => new Promise((resolve) => {
+        // Can't set if the component is already unmounted
+        if (this.unmounted) {
+          resolve(false);
+          return;
+        }
+
+        // Check for changes in state, if not found, then no need to
+        // wait for update
+        if (!stateChanged(stage, this.state)) {
+          console.log('Resolving right away since no change in stage detected', stage, this.state);
+          resolve(true);
+          return;
+        }
+
+        // Resolve later on update
+        this.updateResolvers.push(resolve);
+
+        // Change state
+        this.setState(stage);
+      }),
+    };
+
+    const stage = (props.prepare && props.prepare(proxy, props.params)) || props.params;
+    this.state = {
+      ...stage,
+      __proxy__: proxy,
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // Update the stage when the params change
-    if (nextProps.params !== this.props.params) {
-      nextProps.onChange(
-        stageOnUpdate(this, nextProps),
-        nextProps.params,
-        this.props.params
-      );
-    }
-
     // Only update if the state has changed
-    const update = !shallowEqual(nextState, this.state);
-    if (!update) {
-      console.log('Resolving without update', nextState, this.states);
-      this.resolveAll(true);
-    }
-    return update;
+    return !shallowEqual(nextState, this.state);
   }
 
   componentDidUpdate() {
@@ -91,37 +109,15 @@ class Stage extends Component<Props, {}> {
     this.resolveAll(false);
   }
 
-  updateState(updater, resolve) {
-    if (this.unmounted) {
-      resolve(false);
-      return;
-    }
-
-    console.log('Updating State to ', updater);
-    this.updateResolvers.push(resolve);
-    this.setState(updater);
-  }
-
   resolveAll(result) {
     const all = this.updateResolvers;
     this.updateResolvers = [];
     all.forEach(r => r(result));
   }
 
-  execute(action, params, extraArgs) {
-    console.log('Executing action', action);
-    // Do not execute action on an already unmounted component
-    if (this.unmounted) {
-      return null;
-    }
-
-    return action(stageOnUpdate(this, this.props), params, extraArgs);
-  }
-
   unmounted = false;
 
   render() {
-    console.log('Rendering Stage');
     const { children } = this.props;
     return children(this.state);
   }
