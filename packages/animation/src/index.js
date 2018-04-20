@@ -15,7 +15,6 @@ export function spring(value, toValue, config) {
 }
 
 export function timing(value, toValue, duration = 300, config) {
-  console.log('Timing', value, toValue, duration, config);
   return Animated.timing(value, {
     ...config,
     toValue,
@@ -24,7 +23,7 @@ export function timing(value, toValue, duration = 300, config) {
   });
 }
 
-export function decay(value, velocity, deceleration, config) {
+export function decay(value, velocity, deceleration = 0.997, config) {
   return Animated.decay(value, {
     velocity,
     deceleration,
