@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-import { PLAYER_POSITIONS, PLAYER_SIZE, CENTER_POSITIONS, CARD_WIDTH, CARD_HEIGHT } from './config';
+import { PLAYER_POSITIONS, PLAYER_SIZE, CARD_WIDTH, CARD_HEIGHT } from './config';
 import Table from './Table';
 
 const styles = StyleSheet.create({
