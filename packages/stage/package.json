@@ -1,26 +1,24 @@
 {
   "name": "@bhoos/stage",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "An animation sequencing library",
-  "main": "__dist__/index.js",
+  "main": "cjs/index.js",
+  "react-native": "src/index.js",
   "author": "Ranjan Shrestha",
   "license": "MIT",
   "files": [
-    "__dist__"
+    "cjs",
+    "src"
   ],
   "scripts": {
-    "clean": "../../node_modules/.bin/rimraf __dist__",
-    "flow": "../../node_modules/.bin/flow-copy-source src __dist__",
-    "build": "../../node_modules/.bin/babel src -d __dist__",
+    "clean": "../../node_modules/.bin/rimraf cjs",
+    "flow": "../../node_modules/.bin/flow-copy-source src cjs",
+    "build": "../../node_modules/.bin/babel src -d cjs",
     "prepack": "npm run clean && npm run build && npm run flow",
     "prepublishOnly": "npm run prepack",
-    "watch": "../../node_modules/.bin/babel src -d __dist__ -w"
+    "watch": "../../node_modules/.bin/babel src -d cjs -w"
   },
   "peerDependencies": {
-    "react": "^16.3.0",
-    "react-native": "^0.54.4"
-  },
-  "dependencies": {
-    "prop-types": "^15.6.1"
+    "react": "^16.3.0"
   }
 }
