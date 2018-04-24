@@ -36,7 +36,6 @@ class Group {
     this.lastBatch -= 1;
 
     // Start running the batch
-
     this.run();
   }
 
@@ -64,7 +63,9 @@ class Group {
       }
 
       return action(stage, ...extraArgs);
-    })).then(() => {
+    })).catch((err) => {
+      console.error(err);
+    }).then(() => {
       // Make an attempt to run again once all the actions are done
       this.run();
     });
