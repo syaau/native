@@ -44,6 +44,10 @@ export function sequence(animations) {
   return Animated.sequence(animations);
 }
 
+export function loop(animation, iterations = -1) {
+  return Animated.loop(animation, iterations);
+}
+
 export function stagger(duration, animations) {
   return Animated.stagger(duration, animations);
 }
