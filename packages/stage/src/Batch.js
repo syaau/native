@@ -1,7 +1,11 @@
 // @flow
 
+let num = 0;
+
 class Batch {
   constructor() {
+    num += 1;
+    this.number = num;
     this.items = [];
     this.orders = [];
     this.markIndex = 0;
