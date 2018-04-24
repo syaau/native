@@ -42,7 +42,11 @@ class Stage extends Component<Props, {}> {
 
     // Only if params have changed
     if (!shallowEqual(nextProps.params, currentParams)) {
-      return nextProps.onChange(__proxy__, nextProps.params, currentParams);
+      const res = nextProps.onChange(__proxy__, nextProps.params, currentParams);
+      if (res === undefined) {
+        console.error('Stage onChanged must return either null or a new stage');
+      }
+      return res;
     }
 
     return null;
@@ -74,7 +78,6 @@ class Stage extends Component<Props, {}> {
         // Check for changes in state, if not found, then no need to
         // wait for update
         if (!stateChanged(stage, this.state)) {
-          console.log('Resolving right away since no change in stage detected', stage, this.state);
           resolve(true);
           return;
         }
