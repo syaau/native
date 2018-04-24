@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/stage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An animation sequencing library",
   "main": "cjs/index.js",
   "react-native": "src/index.js",
