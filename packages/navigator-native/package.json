@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/navigator-native",
-  "version": "0.1.3",
+  "version": "0.1.6",
   "description": "React Native components to work with navigator",
   "main": "src/index.js",
   "author": "Ranjan Shrestha",
