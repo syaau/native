@@ -1,15 +1,15 @@
 {
   "name": "@bhoos/foundation-demo",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A simple demo app for foundation",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "@bhoos/animation": "^0.1.2",
     "@bhoos/stage": "^0.1.1",
-    "react": "^16.3.0",
-    "react-native": "^0.54.4",
+    "react": "^16.3.1",
+    "react-native": "^0.55.3",
     "rn-app": "^0.1.0"
   }
 }
