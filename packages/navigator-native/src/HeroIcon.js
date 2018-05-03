@@ -1,7 +1,7 @@
 // @flow
 /* global requestAnimationFrame */
 import React, { Component } from 'react';
-import { Animated, View } from 'react-native';
+import { Animated, Image, StyleSheet } from 'react-native';
 import { withNavigator } from '@bhoos/navigator';
 import createTracker from './createTracker';
 
@@ -11,6 +11,13 @@ type Props = {
   animateTo: () => void,
   style: Object,
 }
+
+const styles = StyleSheet.create({
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+});
 
 const enterAnimation = (tracker, transition) => tracker.fadeIn(transition).zoomIn(transition);
 const leaveAnimation = (tracker, transition) => tracker.fadeOut(transition).zoomOut(transition);
@@ -25,8 +32,6 @@ class HeroIcon extends Component<Props> {
       const translateY = new Animated.Value(0);
       const opacity = new Animated.Value(0);
       this.style = {
-        width: '100%',
-        height: '100%',
         opacity,
         transform: [
           { translateX },
@@ -42,7 +47,11 @@ class HeroIcon extends Component<Props> {
     if (props.link) {
       this.touchHandler = {
         onStartShouldSetResponder: () => true,
+        onResponderGrant: () => {
+          this.style.opacity.setValue(0.5);
+        },
         onResponderRelease: () => {
+          // this.node.getNode().setNativeProps({ opacity: 1 });
           props.navigator.setRoute(props.id);
         },
       };
@@ -69,14 +78,13 @@ class HeroIcon extends Component<Props> {
     if (transition.incoming === id) {
       if (link) {
         requestAnimationFrame(() => {
-          this.node.measure((rx, ry, width, height, x, y) => {
+          this.node.getNode().measure((rx, ry, width, height, x, y) => {
             animateTo(this.tracker, transition, {
               x, y, width, height, rx, ry,
             });
+            this.tracker.track(this.style.opacity, transition, 1);
           });
         });
-        // Perform a specific animation
-        // animateTo(this.tracker, transition);
       }
     } else if (link) {
       // Do the generic animation
@@ -89,9 +97,13 @@ class HeroIcon extends Component<Props> {
       id, link, style, animateTo, ...other
     } = this.props;
     return (
-      <View style={style} ref={(node) => { this.node = node; }} {...this.touchHandler} >
-        <Animated.Image style={this.style} {...other} resizeMode="contain" />
-      </View>
+      <Animated.View
+        style={[style, this.style]}
+        ref={(node) => { this.node = node; }}
+        {...this.touchHandler}
+      >
+        <Image style={styles.image} {...other} resizeMode="contain" />
+      </Animated.View>
     );
   }
 }
