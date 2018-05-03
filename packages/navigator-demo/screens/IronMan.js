@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Animated, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { HeroIcon, createTracker } from '@bhoos/navigator-native';
 
 const iron = require('../assets/iron-man.png');

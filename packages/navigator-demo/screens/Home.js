@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 });
 
 const animateTo = (tracker, transition, { x, y }) => (
-  tracker.move(transition, 60 - x, 60 - y)
+  tracker.move(transition, 30 - x, 30 - y)
 );
 
 class Home extends Component {
