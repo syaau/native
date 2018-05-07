@@ -33,9 +33,9 @@ class Navigator extends Component<Props> {
 
   getScreen = route => this.props.routes[route];
 
-  setRoute = (route) => {
+  setRoute = (route, params) => {
     if (route !== this.currentRoute) {
-      const transition = this.createTransition(route, this.currentRoute);
+      const transition = this.createTransition(route, this.currentRoute, params);
       this.currentRoute = route;
 
       // Run leave event on all the targets
@@ -49,12 +49,13 @@ class Navigator extends Component<Props> {
     }
   }
 
-  createTransition = (incoming, outgoing) => {
+  createTransition = (incoming, outgoing, params) => {
     const dataSet = {};
     const completeListeners = [];
 
     return {
       incoming,
+      params,
       outgoing,
       driver: this.props.createDriver(),
       get: id => dataSet[id],
