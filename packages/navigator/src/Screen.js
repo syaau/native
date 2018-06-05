@@ -49,11 +49,19 @@ class Screen extends Component<Props> {
   }
 
   attachIncoming = (node) => {
-    this.incoming = node;
+    if (node.getWrappedInstance) {
+      this.incoming = node.getWrappedInstance();
+    } else {
+      this.incoming = node;
+    }
   }
 
   attachOutgoing = (node) => {
-    this.outgoing = node;
+    if (node.getWrappedInstance) {
+      this.outgoing = node;
+    } else {
+      this.outgoing = node;
+    }
   }
 
   update = (transition) => {
