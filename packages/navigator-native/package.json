@@ -1,11 +1,11 @@
 {
   "name": "@bhoos/navigator-native",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "React Native components to work with navigator",
   "main": "src/index.js",
   "author": "Ranjan Shrestha",
   "dependencies": {
-    "@bhoos/navigator": "^0.1.8"
+    "@bhoos/navigator": "^0.1.10"
   },
   "peerDependencies": {
     "react": "^16.3.0",
