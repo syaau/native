@@ -15,7 +15,7 @@ export default function withNavigator(Target) {
 
     componentDidMount() {
       if (this.target.onTransition) {
-        this.unmounts.push(this.navigator.addListener(this.target.onTransition));
+        this.unmounts.push(this.navigator.addListener(this.target));
       }
 
       if (this.target.onEnter || this.target.onLeave) {
