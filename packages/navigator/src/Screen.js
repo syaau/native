@@ -58,7 +58,7 @@ class Screen extends Component<Props> {
 
   attachOutgoing = (node) => {
     if (node && node.getWrappedInstance) {
-      this.outgoing = node;
+      this.outgoing = node.getWrappedInstance();
     } else {
       this.outgoing = node;
     }
