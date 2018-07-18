@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/menu",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Menu card with transition",
   "main": "src/index.js",
   "files": [
