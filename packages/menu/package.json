@@ -1,0 +1,22 @@
+{
+  "name": "@bhoos/menu",
+  "version": "0.1.0",
+  "description": "Menu card with transition",
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "@bhoos/navigator": "^0.1.13",
+    "@bhoos/navigator-native": "^0.1.13",
+    "@bhoos/stage": "^0.1.0",
+    "react": "16.3.1",
+    "react-native": "0.55.3",
+    "rn-app": "^0.1.0"
+  },
+  "devDependencies": {
+    "babel-preset-react-native": "^4.0.0"
+  },
+  "author": "Ranjan Shrestha",
+  "license": "MIT"
+}

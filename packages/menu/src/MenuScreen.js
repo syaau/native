@@ -7,7 +7,9 @@ type Props = {
   navigator: Object,
 };
 
-export default function createMenuScreen(Target, { style, invScale, clockWise, dimension }) {
+export default function createMenuScreen(Target, {
+  style, invScale, anchor, tilt, dimension,
+}) {
   return class MenuScreen extends Component<Props> {
     constructor(props) {
       super(props);
@@ -21,9 +23,10 @@ export default function createMenuScreen(Target, { style, invScale, clockWise, d
       this.scaleX = new Animated.Value(this.scale.y);
       this.scaleY = new Animated.Value(this.scale.x);
 
-      const rotationY = clockWise ? ['0deg', '360deg'] : ['360deg', '0deg'];
-      const rotationZ = clockWise ? ['180deg', '0deg'] : ['-180deg', '0deg'];
+      const rotationY = tilt >= 0 ? ['0deg', '360deg'] : ['360deg', '0deg'];
+      const rotationZ = tilt >= 0 ? ['180deg', '0deg'] : ['-180deg', '0deg'];
 
+      this.tilt = new Animated.Value(tilt);
       this.style = {
         opacity: this.flip.interpolate({
           inputRange: [0, 90, 90, 180, 270, 270, 360],
@@ -31,6 +34,14 @@ export default function createMenuScreen(Target, { style, invScale, clockWise, d
         }),
         transform: [
           { perspective: 1200 },
+          { translateY: anchor },
+          {
+            rotate: this.tilt.interpolate({
+              inputRange: [0, 360],
+              outputRange: ['0deg', '360deg'],
+            }),
+          },
+          { translateY: -anchor },
           {
             rotateY: this.flip.interpolate({
               inputRange: [0, 360],
@@ -55,14 +66,16 @@ export default function createMenuScreen(Target, { style, invScale, clockWise, d
       this.tracker
         .track(this.flip, transition, 360)
         .track(this.scaleX, transition, 1)
-        .track(this.scaleY, transition, 1);
+        .track(this.scaleY, transition, 1)
+        .track(this.tilt, transition, 0);
     }
 
     onLeave(transition) {
       this.tracker
         .track(this.flip, transition, 180)
         .track(this.scaleX, transition, this.scale.y)
-        .track(this.scaleY, transition, this.scale.x);
+        .track(this.scaleY, transition, this.scale.x)
+        .track(this.tilt, transition, tilt);
     }
 
     render() {

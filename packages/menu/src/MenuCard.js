@@ -16,7 +16,7 @@ type Props = {
   style: Object,
   onSelect: (navigator: Object) => void,
   tilt: number,
-  anchorY: number,
+  anchor: number,
   route: string,
   scale: {
     x: number,
@@ -46,6 +46,14 @@ class MenuCard extends Component<Props> {
       transform: [
         { perspective: 1200 },
         { translateY: this.translateY },
+        { translateY: props.anchor },
+        {
+          rotate: this.tilt.interpolate({
+            inputRange: [0, 360],
+            outputRange: ['0deg', '360deg'],
+          }),
+        },
+        { translateY: -props.anchor },
         {
           rotateY: this.flip.interpolate({
             inputRange: [0, 360],
@@ -58,14 +66,6 @@ class MenuCard extends Component<Props> {
             outputRange: rotationZ,
           }),
         },
-        { translateY: props.anchorY },
-        {
-          rotate: this.tilt.interpolate({
-            inputRange: [0, 360],
-            outputRange: ['0deg', '360deg'],
-          }),
-        },
-        { translateY: -props.anchorY },
         { scaleX: this.scaleX },
         { scaleY: this.scaleY },
       ],
@@ -79,7 +79,7 @@ class MenuCard extends Component<Props> {
       this.translateY.setValue(400);
       this.tracker.track(this.translateY, transition, 0);
     } else {
-      this.tilt.setValue(-this.props.tilt);
+      this.tilt.setValue(0);
       this.translateY.setValue(0);
       this.flip.setValue(180);
 
@@ -105,7 +105,7 @@ class MenuCard extends Component<Props> {
       this.tracker.track(this.scaleX, transition, scale.x);
       this.tracker.track(this.scaleY, transition, scale.y);
 
-      this.tracker.track(this.tilt, transition, -this.props.tilt);
+      this.tracker.track(this.tilt, transition, 0);
     }
   }
 
@@ -118,7 +118,6 @@ class MenuCard extends Component<Props> {
       <View style={[StyleSheet.absoluteFill, styles.container]} pointerEvents="box-none">
         <TouchableWithoutFeedback
           onPressIn={() => {
-            console.log('Pressed', route);
             onSelect(navigator);
           }}
         >
