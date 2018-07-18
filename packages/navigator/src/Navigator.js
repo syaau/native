@@ -5,7 +5,7 @@ type Props<Driver> = {
   routes: {[string]: Component },
   defaultRoute: string,
   createDriver: () => Driver,
-  runDriver: (driver: Driver) => Promise<*>,
+  runDriver: (driver: Driver, options: {}) => Promise<*>,
 };
 
 const Context = React.createContext({});
@@ -33,9 +33,9 @@ class Navigator extends Component<Props> {
 
   getScreen = route => this.props.routes[route];
 
-  setRoute = (route, params) => {
+  setRoute = (route, options) => {
     if (route !== this.currentRoute) {
-      const transition = this.createTransition(route, this.currentRoute, params);
+      const transition = this.createTransition(route, this.currentRoute, options);
       this.currentRoute = route;
 
       // Run leave event on all the targets
@@ -49,13 +49,14 @@ class Navigator extends Component<Props> {
     }
   }
 
-  createTransition = (incoming, outgoing, params) => {
+  createTransition = (incoming, outgoing, { params, ...options } = {}) => {
     const dataSet = {};
     const completeListeners = [];
 
     return {
       incoming,
       params,
+      options,
       outgoing,
       driver: this.props.createDriver(),
       get: id => dataSet[id],
@@ -73,7 +74,7 @@ class Navigator extends Component<Props> {
     // Trigger enter events
     this.targets.forEach(target => target.onEnter && target.onEnter(transition));
 
-    const result = await this.props.runDriver(transition.driver);
+    const result = await this.props.runDriver(transition.driver, transition.options);
     transition.fire(result);
   }
 

@@ -10,6 +10,7 @@ import Private from './Private';
 import MenuCard from '../../src/MenuCard';
 import calcScale from './_calcScale';
 import createMenuScreen from '../../src/MenuScreen';
+import { EASING_CUBIC } from '@bhoos/navigator-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,6 +37,17 @@ function calcTilt(idx) {
   return factor * (idx % 2 ? 1 : -1);
 }
 
+const options = {
+  [Hotspot.route]: {
+    duration: 600,
+    easing: EASING_CUBIC,
+  },
+  [Tournament.route]: {
+    durationg: 600,
+    easing: EASING_CUBIC,
+  },
+};
+
 const cards = items.map((item, idx) => (
   <MenuCard
     key={item.route}
@@ -43,7 +55,7 @@ const cards = items.map((item, idx) => (
     anchor={anchor}
     route={item.route}
     onSelect={(navigator) => {
-      navigator.setRoute(item.route);
+      navigator.setRoute(item.route, options[item.route]);
     }}
     scale={calcScale(item.card, item.bg)}
   >
