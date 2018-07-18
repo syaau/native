@@ -38,10 +38,10 @@ class Screen extends Component<Props> {
     });
 
     // Trigger all the events
-    if (this.outgoing && this.outgoing.onLeave) {
+    if (this.outgoing.onLeave) {
       this.outgoing.onLeave(transition);
     }
-    if (this.incoming && this.incoming.onEnter) {
+    if (this.incoming.onEnter) {
       this.incoming.onEnter(transition);
     }
 
