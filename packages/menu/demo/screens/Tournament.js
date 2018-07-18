@@ -11,6 +11,7 @@ const Tournament = () => (
 Tournament.route = 'tour';
 Tournament.card = cardImage;
 Tournament.bg = bgImage;
+Tournament.onSelect = nav => nav.setRoute(Tournament.route);
 
 export default Tournament;
 

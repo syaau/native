@@ -12,5 +12,6 @@ const MultiPlayer = () => (
 MultiPlayer.route = 'mp';
 MultiPlayer.card = cardImage;
 MultiPlayer.bg = bgImage;
+MultiPlayer.onSelect = nav => nav.setRoute(MultiPlayer.route);
 
 export default MultiPlayer;

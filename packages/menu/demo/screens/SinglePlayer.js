@@ -26,5 +26,6 @@ const SinglePlayer = () => (
 SinglePlayer.route = 'sp';
 SinglePlayer.card = cardImage;
 SinglePlayer.bg = bgImage;
+SinglePlayer.onSelect = nav => nav.setRoute(SinglePlayer.route);
 
 export default SinglePlayer;

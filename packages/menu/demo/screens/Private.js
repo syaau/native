@@ -12,5 +12,6 @@ const Private = () => (
 Private.route = 'private';
 Private.card = cardImage;
 Private.bg = bgImage;
+Private.onSelect = nav => nav.setRoute(Private.route);
 
 export default Private;
