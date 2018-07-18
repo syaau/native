@@ -20,7 +20,9 @@ class Screen extends Component<Props> {
   }
 
   onMount = (stage, transition) => {
-    this.incoming.onEnter(transition);
+    if (this.incoming && this.incoming.onEnter) {
+      this.incoming.onEnter(transition);
+    }
     this.props.navigator.run(transition);
   }
 
@@ -36,8 +38,12 @@ class Screen extends Component<Props> {
     });
 
     // Trigger all the events
-    this.outgoing.onLeave(transition);
-    this.incoming.onEnter(transition);
+    if (this.outgoing && this.outgoing.onLeave) {
+      this.outgoing.onLeave(transition);
+    }
+    if (this.incoming && this.incoming.onEnter) {
+      this.incoming.onEnter(transition);
+    }
 
     // Trigger all the transitions
     await navigator.run(transition);
