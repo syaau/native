@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 
 type Props<Driver> = {
+  attachment: any,
   routes: {[string]: Component },
   defaultRoute: string,
   createDriver: () => Driver,
@@ -28,6 +29,7 @@ class Navigator extends Component<Props> {
       setRoute: this.setRoute,
       createTransition: this.createTransition,
       run: this.run,
+      attachment: props.attachment,
     };
   }
 
@@ -105,8 +107,11 @@ class Navigator extends Component<Props> {
   }
 
   render() {
+    const {
+      attachment, routes, defaultRoute, createDriver, runDriver, ...other
+    } = this.props;
     return (
-      <Context.Provider {...this.props} value={this.navigator} />
+      <Context.Provider {...other} value={this.navigator} />
     );
   }
 }

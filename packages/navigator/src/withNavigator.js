@@ -32,11 +32,15 @@ export default function withNavigator(Target) {
         <Consumer>
           {(navigator) => {
             this.navigator = navigator;
+
             return (
               <Target
                 ref={(node) => { this.target = node; }}
                 {...this.props}
-                navigator={navigator}
+                navigator={{
+                  setRoute: navigator.setRoute,
+                  attachment: navigator.attachment,
+                }}
               />
             );
           }}
