@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/navigator",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Navigator",
   "main": "cjs/index.js",
   "files": [
