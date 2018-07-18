@@ -5,7 +5,6 @@ export default function createTracker(parts) {
   const tracker = {
     track: (value, transition, to) => {
       value.stopAnimation((currentValue) => {
-        console.log('Tracking from currentValue', currentValue, to);
         // When the transition is complete, reset the value to the final position
         transition.addCompleteListener(() => value.setValue(to));
         Animated.timing(value, {
