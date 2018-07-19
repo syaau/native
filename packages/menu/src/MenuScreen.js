@@ -81,7 +81,7 @@ export default function createMenuScreen(Target, {
     render() {
       return (
         <Animated.View style={[style, this.style]} renderToHardwareTextureAndroid>
-          <Target />
+          <Target navigator={this.props.navigator} />
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <TouchableWithoutFeedback onPressIn={() => this.props.navigator.setRoute('home')}>
               <View
